@@ -54,18 +54,19 @@ usr_select = int(input("Choose Number: "))-1
 result = search_result[usr_select].path.split("/")
 
 # add "'" before and after last list item (media name)
-result[-1] = "'"+result[-1]+"'"
+result[-1] = result[-1].replace("'", "\\'").replace("(",
+                                                    "\(").replace(")", "\)").replace(" ", "\ ")
 
 # convert list into a file path with /
 result = "/".join(result)
-print(result)
 
 # define rsync command
 if arguments.testmode:
-    rysnc_cmd = "sudo rsync -av --dry-run " + result + " " + dest_dir
+    rsync_cmd = "sudo rsync -av --dry-run {} {}".format(result, dest_dir)
 else:
-    rysnc_cmd = "sudo rsync -aP " + result + " " + dest_dir
+    rsync_cmd = "sudo rsync -aP {} {}".format(result, dest_dir)
 
+print("rsync_cmd: {}".format(rsync_cmd))
 
 # Input rsync_cmd into system
-os.system(rysnc_cmd)
+os.system(rsync_cmd)
